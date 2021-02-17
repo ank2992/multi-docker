@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t rambo29/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true rambo29/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t rambo29/multi-client ./client
+  - docker build -t rambo29/multi-nginx ./nginx
+  - docker build -t rambo29/multi-server ./server
+  - docker build -t rambo29/multi-worker ./worker
+# login to CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# take the image and push to docker hub
+  - docker push rambo29/multi-client
+  - docker push rambo29/multi-nginx
+  - docker push rambo29/multi-server
+  - docker push rambo29/multi-worker
