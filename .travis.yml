@@ -19,3 +19,16 @@ after_success:
   - docker push rambo29/multi-nginx
   - docker push rambo29/multi-server
   - docker push rambo29/multi-worker
+# tap the shoulder of Elastic bean stalk
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-1
+  app: multi-docker
+  env: Multidocker-env
+  bucket_name: elasticbeanstalk-eu-west-1-825617255240
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+
